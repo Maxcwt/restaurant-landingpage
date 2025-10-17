@@ -17,6 +17,20 @@ steps:
       - ls -la
       - ls -la public | head -50
 
+  - name: who-am-i
+    image: amazon/aws-cli:2
+    environment:
+      AWS_ACCESS_KEY_ID:
+        from_secret: aws_access_key_id
+      AWS_SECRET_ACCESS_KEY:
+        from_secret: aws_secret_access_key
+      AWS_SESSION_TOKEN:
+        from_secret: aws_session_token
+      AWS_REGION:
+        from_secret: aws_region
+    commands:
+      - aws sts get-caller-identity
+
   - name: upload-to-s3
     image: plugins/s3
     settings:
