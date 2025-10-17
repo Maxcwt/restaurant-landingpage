@@ -16,8 +16,9 @@ steps:
     commands:
       - ls -la
       - ls -la public | head -50
+      -
   - name: who-am-i
-    image: amazon/aws-cli:2
+    image: public.ecr.aws/aws-cli/aws-cli:latest
     environment:
       AWS_ACCESS_KEY_ID:
         from_secret: aws_access_key_id
@@ -28,8 +29,9 @@ steps:
       AWS_REGION:
         from_secret: aws_region
     commands:
-      - aws sts get-caller-identity
-      - aws s3 ls || echo "⚠️ Erreur accès S3"
+      - aws --version
+      - aws sts get-caller-identity || exit 1
+      - aws s3 ls --region ${AWS_REGION}
 
   - name: upload-to-s3
     image: plugins/s3
