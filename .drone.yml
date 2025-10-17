@@ -35,7 +35,7 @@ steps:
       - echo "Bucket=my-restaurant-site-ccm-123456  Region=us-east-1"
       - aws --version
       - aws sts get-caller-identity >/dev/null
-      - aws s3 sync public/ "s3://my-restaurant-site-ccm-123456/" --region "us-east-1" --delete --acl public-read --cache-control "max-age=300"
+      - aws s3 sync public/ "s3://my-restaurant-site-ccm-123456/" --region "us-east-1" --delete --cache-control "max-age=300"
       - aws s3 ls "s3://my-restaurant-site-ccm-123456/" --region "us-east-1" | head -20
     when:
       event: [ push ]
