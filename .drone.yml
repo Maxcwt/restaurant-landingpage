@@ -16,7 +16,6 @@ steps:
     commands:
       - ls -la
       - ls -la public | head -50
-
   - name: upload-to-s3
     image: public.ecr.aws/aws-cli/aws-cli:latest
     environment:
@@ -31,13 +30,19 @@ steps:
       BUCKET:
         from_secret: s3_bucket_name
     commands:
+      - set -euo pipefail
+      - echo "Bucket=$BUCKET Region=$AWS_REGION"
       - aws --version
       - aws sts get-caller-identity
+      - test -d public || (echo "❌ public/ introuvable" && exit 1)
       - aws s3 sync public/ "s3://${BUCKET}/" \
         --region "$AWS_REGION" \
         --delete \
         --acl public-read \
         --cache-control "max-age=300"
+      - echo "✅ Listing S3 après sync:"
+      - aws s3 ls "s3://${BUCKET}/" --region "$AWS_REGION" | head -20
     when:
       event: [ push ]
       branch: [ master ]
+
