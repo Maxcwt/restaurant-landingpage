@@ -3,6 +3,20 @@ type: docker
 name: hugo-to-s3
 
 steps:
+  - name: hugo-build
+    image: peaceiris/hugo:v0.65.3-mod
+    environment:
+      AWS_REGION:
+        from_secret: aws_region
+    commands:
+      - hugo --minify --baseURL "http://$DRONE_REPO_OWNER.s3-website-$AWS_REGION.amazonaws.com/"
+
+  - name: debug-list
+    image: alpine:3.20
+    commands:
+      - ls -la
+      - ls -la public | head -50
+
   - name: upload-to-s3
     image: plugins/s3
     settings:
@@ -14,13 +28,9 @@ steps:
       secret_key:
         from_secret: aws_secret_access_key
       source: public/**
-      target: /
       strip_prefix: public/
-      acl: public-read
-      path_style: true
+      target: /
       recursive: true
     when:
-      event:
-        - push
-      branch:
-        - master
+      event: [ push ]
+      branch: [ master ]
