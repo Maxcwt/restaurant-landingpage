@@ -32,17 +32,17 @@ steps:
         from_secret: s3_bucket_name
     commands:
       - set -euo pipefail
-      - echo "Bucket=$BUCKET  Region=$AWS_REGION"
-      - '[ -n "$BUCKET" ] || { echo "❌ BUCKET vide (secret s3_bucket_name absent ?)"; exit 1; }'
-      - test -d public || { echo "❌ Dossier public/ introuvable"; exit 1; }
+      - echo "Bucket=${BUCKET}  Region=${AWS_REGION}"
+      - '[ -n "${BUCKET:-}" ] || { echo "❌ BUCKET vide (secret s3_bucket_name manquant ?)"; exit 1; }'
+      - 'test -d public || { echo "❌ Dossier public/ introuvable (Hugo a-t-il build ?)"; exit 1; }'
       - aws --version
-      - aws sts get-caller-identity
+      - aws sts get-caller-identity >/dev/null
       - aws s3 sync public/ "s3://${BUCKET}/" --region "$AWS_REGION" --delete --acl public-read --cache-control "max-age=300"
-      - echo "✅ Listing S3 après sync :"
       - aws s3 ls "s3://${BUCKET}/" --region "$AWS_REGION" | head -20
     when:
       event: [ push ]
       branch: [ master ]
+
 
 
 
