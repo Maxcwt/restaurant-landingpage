@@ -18,6 +18,7 @@ steps:
     commands:
       - ls -la
       - ls -la public | head -50
+      -
   - name: upload-to-s3
     image: public.ecr.aws/aws-cli/aws-cli:latest
     environment:
