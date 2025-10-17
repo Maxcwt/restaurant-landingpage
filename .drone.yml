@@ -9,7 +9,7 @@ steps:
       AWS_REGION:
         from_secret: aws_region
     commands:
-      - hugo --minify --baseURL "http://$DRONE_REPO_OWNER.s3-website-$AWS_REGION.amazonaws.com/"
+      - hugo --minify --baseURL "https://my-restaurant-site-ccm-123456.s3.us-east-1.amazonaws.com/"
 
   - name: debug-list
     image: alpine:3.20
