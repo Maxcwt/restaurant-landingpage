@@ -8,6 +8,8 @@ steps:
     environment:
       AWS_REGION:
         from_secret: aws_region
+      BUCKET:
+        from_secret: s3_bucket_name
     commands:
       - hugo --minify --baseURL "https://my-restaurant-site-ccm-123456.s3.us-east-1.amazonaws.com/"
 
