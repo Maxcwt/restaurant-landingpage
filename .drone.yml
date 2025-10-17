@@ -3,23 +3,24 @@ type: docker
 name: hugo-to-s3
 
 steps:
-  - name: publish-to-s3
-    image: amazon/aws-cli:2
-    environment:
-      AWS_ACCESS_KEY_ID:
-        from_secret: aws_access_key_id
-      AWS_SECRET_ACCESS_KEY:
-        from_secret: aws_secret_access_key
-      AWS_REGION:
+  - name: upload-to-s3
+    image: plugins/s3
+    settings:
+      bucket: my-restaurant-site-ccm-123456
+      region:
         from_secret: aws_region
-      BUCKET: my-restaurant-site-ccm-123456
-    commands:
-      - aws --version
-      - aws s3 sync public/ "s3://${BUCKET}" --delete
-      - aws s3 ls "s3://${BUCKET}" | head -5
-
-trigger:
-  event:
-    - push
-  branch:
-    - master
+      access_key:
+        from_secret: aws_access_key_id
+      secret_key:
+        from_secret: aws_secret_access_key
+      source: public/**
+      target: /
+      strip_prefix: public/
+      acl: public-read
+      path_style: true
+      recursive: true
+    when:
+      event:
+        - push
+      branch:
+        - master
