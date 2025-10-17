@@ -13,7 +13,7 @@ steps:
         from_secret: aws_secret_access_key
       AWS_REGION:
         from_secret: aws_region
-      BUCKET: my-restaurant-site-ccm-123456  # <= remplace par le bucket
+      BUCKET: my-restaurant-site-ccm-123456
     commands:
       - echo "🚀 Upload vers S3 : $BUCKET"
       - aws s3 sync public/ "s3://${BUCKET}" --delete
